@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Steam-Traffic-Tracker</title>
+    <link rel="stylesheet" href="/dist/json-viewer.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+</head>
+<body>
+    <h1>Steam Traffic Tracer</h1>
+    <p>This Page is based on WebSocket - <span id="ws_status" style="color: purple">Connecting</span></p>
+    <div id="tree"></div>
+    <div id="jsonview_root"></div>
+</body>
+<footer>
+    <script src="https://unpkg.com/jquery@3.5.1/dist/jquery.js"></script>
+    <script src="/dist/json-viewer.js"></script>
+    <script>
+        let socket, msglist = [
+            'testnode'
+        ], jsonViewer = new JSONViewer();
+        $(document).ready(function () {
+            document.querySelector("#jsonview_root").appendChild(jsonViewer.getContainer());
+            try {
+                socket = new WebSocket('ws://localhost:8050/tracer')
+            } catch (e) {
+                $('#ws_status').text('Error: ' + e.message)
+                $('#ws_status').css('color', '#800')
+            }
+            socket.onopen = (() => {
+                $('#ws_status').text('Connected')
+                $('#ws_status').css('color', '#11bd4e')
+            })
+            socket.onerror = ((error) => {
+                $('#ws_status').text('Error: ' + error.message)
+                $('#ws_status').css('color', '#800')
+            })
+            socket.onclose = ((error) => {
+                $('#ws_status').text('Disconnected')
+                $('#ws_status').css('color', '#800')
+            })
+            socket.onmessage = ((event) => {
+                if (event.data) {
+                    let msg = JSON.parse(event.data)
+                    let formattedMsg = {
+                        EMsg: (msg.header && msg.header.proto.target_job_name) ? msg.header.proto.target_job_name : msg.header.EMsgName,
+                        message: msg
+                    }
+                    msglist.push(formattedMsg)
+                    jsonViewer.showJSON(msglist);
+                    console.log(msg)
+                }
+            })
+        })
+    </script>
+</footer>
+</html>
