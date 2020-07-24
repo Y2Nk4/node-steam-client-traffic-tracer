@@ -109,3 +109,4 @@ dist
 # .dat data
 message.dat
 cert/ca/ca.key
+cert/private.key
