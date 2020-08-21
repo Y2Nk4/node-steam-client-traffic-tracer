@@ -13,7 +13,7 @@ In a short word, **everything is safe, Steam, RSA, AES are not broken**,
 the decryption is based on MITM and local-trusted self-signed SSL certificate.
 Another example of this kind of "attack" is [Fiddler](https://www.telerik.com/fiddler).
 
-**Nothing will be attacked unless your desktop somehow trusted a malicious certificate.**
+**Nothing will be attacked unless your desktop somehow trusted a malicious certificate. (Except this [situation](#0x04-how-to-prevent))**
 
 At the beginning of this project, I think about decrypting the TCP connection,
 but end up with impossible. The TCP protocol that is using between Steam Client
