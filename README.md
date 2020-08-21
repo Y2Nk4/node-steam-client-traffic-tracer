@@ -88,7 +88,8 @@ Once the script runs, it will create 3 servers.
 Then Open `http://localhost:8050` in your browser, open your Steam Client,
 you will be able to see the decoded traffic between your Steam Client and CM Server.
 
-***Not Capturing Data***
+***Not Capturing Data?***
+
 In my test, the Steam Client will pick the protocol randomly in either TCP, UDP, or WebSocket.
 **Don't Start Steam with the launch option `-tcp`** because it will force Steam to use TCP
 protocol.
