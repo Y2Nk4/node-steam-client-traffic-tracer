@@ -20,8 +20,8 @@ but end up with impossible. The TCP protocol that is using between Steam Client
 and the CM Server is not raw TCP connection, but encrypted by AES-256-CBC
 (with HMAC_SHA1 to generate IV to prevent padding oracle attack,
 for more, you can read this [article: Breaking Steam Client Cryptography](https://steamdb.info/blog/breaking-steam-client-cryptography/)).
-Also, when the client and the sever exchange the encryption key, the key will
-be encrypted by a built-in [RSA Public Key](https://github.com/seishun/node-steam-crypto/issues/3).
+Also, when the client and the sever exchange the encryption key for every session, 
+the key will be encrypted by a built-in [RSA Public Key](https://github.com/seishun/node-steam-crypto/issues/3).
 Based on this, it's hard to get encryption key to decrypt the steam traffic.
 I think the available way to decrypt the TCP Protocol is to hook the Steam
 Client to get the AES key once the client starts. Since I don't know much about
@@ -129,7 +129,26 @@ Then theoretically, it will work as the screenshot show below.
 
 ![Screnshot](/document/screenshot.png)
 
-### 0x04 Reference
+### 0x04 How to Prevent?
+This attack is based on the local-trusted self-signed certificate. 
+While I was revising this article, I realized this kind of attack could be 
+used in a public device(such as the devices in the libraries, cafes, or Internet Cafes) 
+where the devices are potentially installed malicious certificates and MITM services.
+
+So I add this part for you to know how you can prevent this kind of attack on a 
+public device.
+
+#### Force Steam Client to use TCP connection
+[How to force Steam use TCP connection](https://support.steampowered.com/kb_article.php?ref=5623-QOSV-5250)
+
+By adding `tcp` launch option to Steam when you are trying to launch it, Steam will be
+forced to use TCP connection rather than UDP or WebSockets.
+
+As I said in the Part 1, when the Steam Client is using TCP connection, the client and the sever 
+exchange the encryption key for every session, the key will be encrypted by a built-in [RSA Public Key](https://github.com/seishun/node-steam-crypto/issues/3).
+Based on this, it's hard to get encryption key to decrypt the steam traffic.
+
+### 0x05 Reference
 - [木亖 - 利用nodejs搭建 https 代理服务器并实现中间人攻击](https://juejin.im/post/5cce881ef265da036902a934)
 - [Using Fiddler with WinHTTP](https://www.telerik.com/blogs/using-fiddler-with-winhttp)
 - [Breaking Steam Client Cryptography](https://steamdb.info/blog/breaking-steam-client-cryptography/)
